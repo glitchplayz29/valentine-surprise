@@ -1,0 +1,836 @@
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💝 A Special Surprise For You</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            overflow: hidden;
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* Sky Background */
+        .sky-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, #87CEEB 0%, #B0E0E6 50%, #E0F6FF 100%);
+            z-index: 1;
+            transition: all 2s ease;
+        }
+
+        .sky-background.glass-effect {
+            background: linear-gradient(135deg, rgba(255, 187, 217, 0.3) 0%, rgba(167, 119, 227, 0.3) 100%);
+            backdrop-filter: blur(60px) saturate(200%);
+            -webkit-backdrop-filter: blur(60px) saturate(200%);
+        }
+
+        /* Decorative Frame */
+        .frame {
+            position: fixed;
+            top: -20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 92%;
+            max-width: 700px;
+            height: 85vh;
+            border: 3px solid rgba(255, 255, 255, 0.5);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            z-index: 2;
+            animation: frameSlideDown 2s ease-out forwards;
+            animation-delay: 0.5s;
+            pointer-events: none;
+        }
+
+        @keyframes frameSlideDown {
+            to {
+                top: 50%;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        /* Tree Container */
+        .tree-container {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 450px;
+            z-index: 3;
+            opacity: 0;
+            animation: treeGrow 1.5s ease-out forwards;
+            animation-delay: 2s;
+        }
+
+        @keyframes treeGrow {
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Tree SVG */
+        .tree {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Grass */
+        .grass {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+        }
+
+        /* Valentine Card */
+        .valentine-card {
+            position: fixed;
+            top: -500px;
+            left: 50%;
+            width: 280px;
+            height: 400px;
+            transform: translateX(-50%) rotate(0deg);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            z-index: 10;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .valentine-card.falling {
+            animation: cardFall 4s ease-in-out forwards;
+            animation-delay: 4s;
+            opacity: 1;
+            visibility: visible;
+        }
+
+        @keyframes cardFall {
+            0% {
+                top: -400px;
+                opacity: 1;
+                transform: translateX(-50%) rotate(-15deg) rotateY(-20deg);
+            }
+            15% {
+                transform: translateX(-55%) rotate(10deg) rotateY(25deg);
+            }
+            30% {
+                transform: translateX(-45%) rotate(-8deg) rotateY(-18deg);
+            }
+            45% {
+                transform: translateX(-52%) rotate(12deg) rotateY(20deg);
+            }
+            60% {
+                transform: translateX(-48%) rotate(-6deg) rotateY(-12deg);
+            }
+            75% {
+                transform: translateX(-50%) rotate(4deg) rotateY(8deg);
+            }
+            90% {
+                transform: translateX(-50%) rotate(-2deg) rotateY(-4deg);
+            }
+            100% {
+                top: 50%;
+                transform: translateX(-50%) translateY(-50%) rotate(0deg) rotateY(0deg);
+            }
+        }
+
+        .card-wrapper {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card-wrapper.opened {
+            transform: rotateY(-180deg);
+        }
+
+        .card-front,
+        .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-front {
+            background: linear-gradient(135deg, #FFBBD9 0%, #FFD4E5 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .card-front:hover {
+            transform: scale(1.05);
+        }
+
+        .card-front h2 {
+            color: #C2185B;
+            font-size: 28px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .tap-instruction {
+            color: #D81B60;
+            font-size: 18px;
+            margin-top: 30px;
+            padding: 12px 30px;
+            border: 2px solid #D81B60;
+            border-radius: 30px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, #FFBBD9 0%, #FFE4F0 100%);
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 30px;
+        }
+
+        .emoji-face {
+            font-size: 70px;
+            margin-bottom: 20px;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+
+        .card-back h1 {
+            color: #C2185B;
+            font-size: 26px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .question-text {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 30px;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        button {
+            padding: 14px 35px;
+            font-size: 18px;
+            font-weight: 600;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        #yesBtn {
+            background: linear-gradient(135deg, #FFBBD9 0%, #FF69B4 100%);
+            color: white;
+        }
+
+        #yesBtn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(255, 105, 180, 0.5);
+        }
+
+        #noBtn {
+            background: #E0E0E0;
+            color: #666;
+            transition: all 0.2s ease;
+        }
+
+        /* Falling Hearts */
+        .falling-heart {
+            position: fixed;
+            font-size: 25px;
+            pointer-events: none;
+            z-index: 5;
+            animation: heartFall 8s linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes heartFall {
+            0% {
+                top: -50px;
+                opacity: 0;
+                transform: translateX(0) rotate(0deg);
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 0.7;
+            }
+            100% {
+                top: 110vh;
+                opacity: 0;
+                transform: translateX(var(--sway)) rotate(360deg);
+            }
+        }
+
+        /* Success Celebration */
+        .celebration-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .celebration-overlay.show {
+            display: flex;
+        }
+
+        .celebration-content {
+            background: white;
+            padding: 50px;
+            border-radius: 30px;
+            text-align: center;
+            animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .celebration-emoji {
+            font-size: 100px;
+            animation: spin 1s ease-in-out;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg) scale(0);
+            }
+            50% {
+                transform: rotate(180deg) scale(1.3);
+            }
+            100% {
+                transform: rotate(360deg) scale(1);
+            }
+        }
+
+        .success-message {
+            color: #4CAF50;
+            font-size: 28px;
+            font-weight: 700;
+            margin: 20px 0;
+        }
+
+        .redirect-text {
+            color: #666;
+            font-size: 16px;
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #f0f;
+            z-index: 99;
+            animation: confettiFall 3s linear;
+        }
+
+        @keyframes confettiFall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .valentine-card {
+                width: 320px;
+                height: 450px;
+            }
+
+            .card-front h2 {
+                font-size: 24px;
+            }
+
+            .card-back h1 {
+                font-size: 22px;
+            }
+
+            .question-text {
+                font-size: 15px;
+            }
+
+            button {
+                padding: 12px 25px;
+                font-size: 16px;
+            }
+
+            .tree-container {
+                width: 500px;
+                height: 400px;
+            }
+            
+            .frame {
+                width: 95%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .valentine-card {
+                width: 280px;
+                height: 400px;
+            }
+
+            .card-front h2 {
+                font-size: 20px;
+            }
+
+            .button-container {
+                flex-direction: row;
+                gap: 10px;
+            }
+
+            button {
+                padding: 10px 20px;
+                font-size: 15px;
+            }
+            
+            .tree-container {
+                width: 400px;
+                height: 350px;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sky Background -->
+    <div class="sky-background" id="skyBg"></div>
+
+    <!-- Decorative Frame -->
+    <div class="frame"></div>
+
+    <!-- Tree -->
+    <div class="tree-container">
+        <svg class="tree" viewBox="0 0 600 450" xmlns="http://www.w3.org/2000/svg">
+            <!-- Grass -->
+            <ellipse cx="300" cy="420" rx="300" ry="30" fill="#7CB342"/>
+            <ellipse cx="300" cy="418" rx="290" ry="28" fill="#8BC34A"/>
+            <ellipse cx="300" cy="415" rx="280" ry="26" fill="#9CCC65"/>
+            
+            <!-- Tree 1 (Left) -->
+            <rect x="100" y="250" width="25" height="180" fill="#5D4037" rx="3"/>
+            <ellipse cx="112" cy="230" rx="60" ry="80" fill="#6D4C41" opacity="0.3"/>
+            
+            <!-- Tree 2 (Center-Left) -->
+            <rect x="200" y="200" width="30" height="230" fill="#5D4037" rx="3"/>
+            <ellipse cx="215" cy="180" rx="75" ry="100" fill="#6D4C41" opacity="0.3"/>
+            
+            <!-- Tree 3 (Center) - Main tree -->
+            <rect x="285" y="180" width="35" height="250" fill="#5D4037" rx="3"/>
+            <ellipse cx="302" cy="150" rx="90" ry="120" fill="#6D4C41" opacity="0.3"/>
+            
+            <!-- Tree 4 (Center-Right) -->
+            <rect x="385" y="200" width="30" height="230" fill="#5D4037" rx="3"/>
+            <ellipse cx="400" cy="180" rx="75" ry="100" fill="#6D4C41" opacity="0.3"/>
+            
+            <!-- Tree 5 (Right) -->
+            <rect x="480" y="250" width="25" height="180" fill="#5D4037" rx="3"/>
+            <ellipse cx="492" cy="230" rx="60" ry="80" fill="#6D4C41" opacity="0.3"/>
+            
+            <!-- Heart leaves for Tree 1 -->
+            <g id="hearts1">
+                <!-- Multiple heart clusters -->
+                <path d="M 80,220 C 78,216 74,216 74,220 C 74,223 77,227 80,230 C 83,227 86,223 86,220 C 86,216 82,216 80,220 Z" fill="#E91E63"/>
+                <path d="M 95,210 C 93,206 89,206 89,210 C 89,213 92,217 95,220 C 98,217 101,213 101,210 C 101,206 97,206 95,210 Z" fill="#F06292"/>
+                <path d="M 110,225 C 108,221 104,221 104,225 C 104,228 107,232 110,235 C 113,232 116,228 116,225 C 116,221 112,221 110,225 Z" fill="#EC407A"/>
+                <path d="M 125,215 C 123,211 119,211 119,215 C 119,218 122,222 125,225 C 128,222 131,218 131,215 C 131,211 127,211 125,215 Z" fill="#C2185B"/>
+                <path d="M 90,235 C 88,231 84,231 84,235 C 84,238 87,242 90,245 C 93,242 96,238 96,235 C 96,231 92,231 90,235 Z" fill="#AD1457"/>
+                <path d="M 105,240 C 103,236 99,236 99,240 C 99,243 102,247 105,250 C 108,247 111,243 111,240 C 111,236 107,236 105,240 Z" fill="#F48FB1"/>
+                <path d="M 120,230 C 118,226 114,226 114,230 C 114,233 117,237 120,240 C 123,237 126,233 126,230 C 126,226 122,226 120,230 Z" fill="#E91E63"/>
+                <path d="M 135,225 C 133,221 129,221 129,225 C 129,228 132,232 135,235 C 138,232 141,228 141,225 C 141,221 137,221 135,225 Z" fill="#F06292"/>
+            </g>
+            
+            <!-- Heart leaves for Tree 2 -->
+            <g id="hearts2">
+                <path d="M 170,180 C 168,176 164,176 164,180 C 164,183 167,187 170,190 C 173,187 176,183 176,180 C 176,176 172,176 170,180 Z" fill="#E91E63"/>
+                <path d="M 190,170 C 188,166 184,166 184,170 C 184,173 187,177 190,180 C 193,177 196,173 196,170 C 196,166 192,166 190,170 Z" fill="#F06292"/>
+                <path d="M 210,185 C 208,181 204,181 204,185 C 204,188 207,192 210,195 C 213,192 216,188 216,185 C 216,181 212,181 210,185 Z" fill="#EC407A"/>
+                <path d="M 230,175 C 228,171 224,171 224,175 C 224,178 227,182 230,185 C 233,182 236,178 236,175 C 236,171 232,171 230,175 Z" fill="#C2185B"/>
+                <path d="M 185,195 C 183,191 179,191 179,195 C 179,198 182,202 185,205 C 188,202 191,198 191,195 C 191,191 187,191 185,195 Z" fill="#AD1457"/>
+                <path d="M 205,200 C 203,196 199,196 199,200 C 199,203 202,207 205,210 C 208,207 211,203 211,200 C 211,196 207,196 205,200 Z" fill="#F48FB1"/>
+                <path d="M 225,190 C 223,186 219,186 219,190 C 219,193 222,197 225,200 C 228,197 231,193 231,190 C 231,186 227,186 225,190 Z" fill="#E91E63"/>
+                <path d="M 245,185 C 243,181 239,181 239,185 C 239,188 242,192 245,195 C 248,192 251,188 251,185 C 251,181 247,181 245,185 Z" fill="#F06292"/>
+                <path d="M 180,165 C 178,161 174,161 174,165 C 174,168 177,172 180,175 C 183,172 186,168 186,165 C 186,161 182,161 180,165 Z" fill="#EC407A"/>
+                <path d="M 200,160 C 198,156 194,156 194,160 C 194,163 197,167 200,170 C 203,167 206,163 206,160 C 206,156 202,156 200,160 Z" fill="#C2185B"/>
+            </g>
+            
+            <!-- Heart leaves for Tree 3 (Main/Center) - Most hearts -->
+            <g id="hearts3">
+                <path d="M 255,140 C 253,136 249,136 249,140 C 249,143 252,147 255,150 C 258,147 261,143 261,140 C 261,136 257,136 255,140 Z" fill="#E91E63"/>
+                <path d="M 275,130 C 273,126 269,126 269,130 C 269,133 272,137 275,140 C 278,137 281,133 281,130 C 281,126 277,126 275,130 Z" fill="#F06292"/>
+                <path d="M 295,145 C 293,141 289,141 289,145 C 289,148 292,152 295,155 C 298,152 301,148 301,145 C 301,141 297,141 295,145 Z" fill="#EC407A"/>
+                <path d="M 315,135 C 313,131 309,131 309,135 C 309,138 312,142 315,145 C 318,142 321,138 321,135 C 321,131 317,131 315,135 Z" fill="#C2185B"/>
+                <path d="M 335,150 C 333,146 329,146 329,150 C 329,153 332,157 335,160 C 338,157 341,153 341,150 C 341,146 337,146 335,150 Z" fill="#AD1457"/>
+                <path d="M 270,155 C 268,151 264,151 264,155 C 264,158 267,162 270,165 C 273,162 276,158 276,155 C 276,151 272,151 270,155 Z" fill="#F48FB1"/>
+                <path d="M 290,160 C 288,156 284,156 284,160 C 284,163 287,167 290,170 C 293,167 296,163 296,160 C 296,156 292,156 290,160 Z" fill="#E91E63"/>
+                <path d="M 310,150 C 308,146 304,146 304,150 C 304,153 307,157 310,160 C 313,157 316,153 316,150 C 316,146 312,146 310,150 Z" fill="#F06292"/>
+                <path d="M 330,165 C 328,161 324,161 324,165 C 324,168 327,172 330,175 C 333,172 336,168 336,165 C 336,161 332,161 330,165 Z" fill="#EC407A"/>
+                <path d="M 265,120 C 263,116 259,116 259,120 C 259,123 262,127 265,130 C 268,127 271,123 271,120 C 271,116 267,116 265,120 Z" fill="#C2185B"/>
+                <path d="M 285,115 C 283,111 279,111 279,115 C 279,118 282,122 285,125 C 288,122 291,118 291,115 C 291,111 287,111 285,115 Z" fill="#AD1457"/>
+                <path d="M 305,125 C 303,121 299,121 299,125 C 299,128 302,132 305,135 C 308,132 311,128 311,125 C 311,121 307,121 305,125 Z" fill="#F48FB1"/>
+                <path d="M 325,120 C 323,116 319,116 319,120 C 319,123 322,127 325,130 C 328,127 331,123 331,120 C 331,116 327,116 325,120 Z" fill="#E91E63"/>
+                <path d="M 345,140 C 343,136 339,136 339,140 C 339,143 342,147 345,150 C 348,147 351,143 351,140 C 351,136 347,136 345,140 Z" fill="#F06292"/>
+            </g>
+            
+            <!-- Heart leaves for Tree 4 -->
+            <g id="hearts4">
+                <path d="M 360,180 C 358,176 354,176 354,180 C 354,183 357,187 360,190 C 363,187 366,183 366,180 C 366,176 362,176 360,180 Z" fill="#E91E63"/>
+                <path d="M 380,170 C 378,166 374,166 374,170 C 374,173 377,177 380,180 C 383,177 386,173 386,170 C 386,166 382,166 380,170 Z" fill="#F06292"/>
+                <path d="M 400,185 C 398,181 394,181 394,185 C 394,188 397,192 400,195 C 403,192 406,188 406,185 C 406,181 402,181 400,185 Z" fill="#EC407A"/>
+                <path d="M 420,175 C 418,171 414,171 414,175 C 414,178 417,182 420,185 C 423,182 426,178 426,175 C 426,171 422,171 420,175 Z" fill="#C2185B"/>
+                <path d="M 375,195 C 373,191 369,191 369,195 C 369,198 372,202 375,205 C 378,202 381,198 381,195 C 381,191 377,191 375,195 Z" fill="#AD1457"/>
+                <path d="M 395,200 C 393,196 389,196 389,200 C 389,203 392,207 395,210 C 398,207 401,203 401,200 C 401,196 397,196 395,200 Z" fill="#F48FB1"/>
+                <path d="M 415,190 C 413,186 409,186 409,190 C 409,193 412,197 415,200 C 418,197 421,193 421,190 C 421,186 417,186 415,190 Z" fill="#E91E63"/>
+                <path d="M 435,185 C 433,181 429,181 429,185 C 429,188 432,192 435,195 C 438,192 441,188 441,185 C 441,181 437,181 435,185 Z" fill="#F06292"/>
+                <path d="M 370,165 C 368,161 364,161 364,165 C 364,168 367,172 370,175 C 373,172 376,168 376,165 C 376,161 372,161 370,165 Z" fill="#EC407A"/>
+                <path d="M 390,160 C 388,156 384,156 384,160 C 384,163 387,167 390,170 C 393,167 396,163 396,160 C 396,156 392,156 390,160 Z" fill="#C2185B"/>
+            </g>
+            
+            <!-- Heart leaves for Tree 5 -->
+            <g id="hearts5">
+                <path d="M 460,220 C 458,216 454,216 454,220 C 454,223 457,227 460,230 C 463,227 466,223 466,220 C 466,216 462,216 460,220 Z" fill="#E91E63"/>
+                <path d="M 475,210 C 473,206 469,206 469,210 C 469,213 472,217 475,220 C 478,217 481,213 481,210 C 481,206 477,206 475,210 Z" fill="#F06292"/>
+                <path d="M 490,225 C 488,221 484,221 484,225 C 484,228 487,232 490,235 C 493,232 496,228 496,225 C 496,221 492,221 490,225 Z" fill="#EC407A"/>
+                <path d="M 505,215 C 503,211 499,211 499,215 C 499,218 502,222 505,225 C 508,222 511,218 511,215 C 511,211 507,211 505,215 Z" fill="#C2185B"/>
+                <path d="M 470,235 C 468,231 464,231 464,235 C 464,238 467,242 470,245 C 473,242 476,238 476,235 C 476,231 472,231 470,235 Z" fill="#AD1457"/>
+                <path d="M 485,240 C 483,236 479,236 479,240 C 479,243 482,247 485,250 C 488,247 491,243 491,240 C 491,236 487,236 485,240 Z" fill="#F48FB1"/>
+                <path d="M 500,230 C 498,226 494,226 494,230 C 494,233 497,237 500,240 C 503,237 506,233 506,230 C 506,226 502,226 500,230 Z" fill="#E91E63"/>
+                <path d="M 515,225 C 513,221 509,221 509,225 C 509,228 512,232 515,235 C 518,232 521,228 521,225 C 521,221 517,221 515,225 Z" fill="#F06292"/>
+            </g>
+            
+            <!-- Falling heart leaves (animation) -->
+            <g id="falling-leaves" opacity="0.7">
+                <path d="M 120,260 C 118,256 114,256 114,260 C 114,263 117,267 120,270 C 123,267 126,263 126,260 C 126,256 122,256 120,260 Z" fill="#F48FB1">
+                    <animateTransform attributeName="transform" type="translate" values="0,0; -10,20; 0,40" dur="4s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.7;0.3;0" dur="4s" repeatCount="indefinite"/>
+                </path>
+                <path d="M 305,170 C 303,166 299,166 299,170 C 299,173 302,177 305,180 C 308,177 311,173 311,170 C 311,166 307,166 305,170 Z" fill="#EC407A">
+                    <animateTransform attributeName="transform" type="translate" values="0,0; 15,25; 0,50" dur="5s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.7;0.3;0" dur="5s" repeatCount="indefinite"/>
+                </path>
+                <path d="M 490,245 C 488,241 484,241 484,245 C 484,248 487,252 490,255 C 493,252 496,248 496,245 C 496,241 492,241 490,245 Z" fill="#F06292">
+                    <animateTransform attributeName="transform" type="translate" values="0,0; 10,30; 0,60" dur="6s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.7;0.3;0" dur="6s" repeatCount="indefinite"/>
+                </path>
+            </g>
+        </svg>
+    </div>
+
+    <!-- Valentine Card -->
+    <div class="valentine-card" id="card">
+        <div class="card-wrapper" id="cardWrapper">
+            <!-- Card Front -->
+            <div class="card-front" id="cardFront">
+                <h2>Hey, a surprise for you</h2>
+                <div>💝</div>
+                <div class="tap-instruction">tap</div>
+            </div>
+
+            <!-- Card Back (Inside) -->
+            <div class="card-back">
+                <div class="emoji-face" id="emoji">🥺</div>
+                <h1>Will You Be My Valentine?</h1>
+                <p class="question-text">I've been thinking about this for a while... Would you make me the happiest person and be my Valentine? 💕</p>
+                
+                <div class="button-container">
+                    <button id="yesBtn">Yes! 💖</button>
+                    <button id="noBtn">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Celebration Overlay -->
+    <div class="celebration-overlay" id="celebrationOverlay">
+        <div class="celebration-content">
+            <div class="celebration-emoji">🎉</div>
+            <p class="success-message">Yay! I'm so happy! 😊</p>
+            <p class="redirect-text">Redirecting you to share your details...</p>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const googleFormURL = 'https://forms.gle/L7MS4ekVSDdCYscn6';
+        
+        // Elements
+        const skyBg = document.getElementById('skyBg');
+        const card = document.getElementById('card');
+        const cardWrapper = document.getElementById('cardWrapper');
+        const cardFront = document.getElementById('cardFront');
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const emoji = document.getElementById('emoji');
+        const celebrationOverlay = document.getElementById('celebrationOverlay');
+
+        let noBtnSize = 1;
+        let heartsStarted = false;
+
+        // Start card falling animation
+        setTimeout(() => {
+            card.classList.add('falling');
+        }, 100);
+
+        // Apply glass effect when card lands
+        setTimeout(() => {
+            skyBg.classList.add('glass-effect');
+            if (!heartsStarted) {
+                startFallingHearts();
+                heartsStarted = true;
+            }
+        }, 8000);
+
+        // Card tap/click to open
+        cardFront.addEventListener('click', openCard);
+
+        function openCard() {
+            cardWrapper.classList.add('opened');
+            playSound('click');
+        }
+
+        // Falling hearts animation
+        function startFallingHearts() {
+            const heartEmojis = ['💕', '💖', '💗', '💓', '💝', '💞', '❤️', '💜'];
+            
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.className = 'falling-heart';
+                heart.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                heart.style.animationDuration = (Math.random() * 3 + 5) + 's';
+                heart.style.animationDelay = (Math.random() * 2) + 's';
+                heart.style.setProperty('--sway', (Math.random() * 100 - 50) + 'px');
+                
+                document.body.appendChild(heart);
+                
+                setTimeout(() => heart.remove(), 10000);
+            }, 300);
+        }
+
+        // NO button behavior - runs away fast
+        noBtn.addEventListener('mouseover', moveNoButton);
+        noBtn.addEventListener('click', noButtonClick);
+
+        function moveNoButton(e) {
+            e.preventDefault();
+            
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+            
+            // Random position with faster movement
+            const randomX = (Math.random() - 0.5) * (viewportWidth * 0.4);
+            const randomY = (Math.random() - 0.5) * 150;
+            
+            noBtn.style.transform = `translate(${randomX}px, ${randomY}px)`;
+            
+            // Shrink button
+            noBtnSize *= 0.85;
+            noBtn.style.fontSize = `${18 * noBtnSize}px`;
+            noBtn.style.padding = `${14 * noBtnSize}px ${35 * noBtnSize}px`;
+            
+            // Change emoji
+            const sadEmojis = ['🥺', '😢', '😭', '💔', '🙏', '😔'];
+            emoji.textContent = sadEmojis[Math.floor(Math.random() * sadEmojis.length)];
+            
+            // If button gets too small, reset
+            if (noBtnSize < 0.3) {
+                noBtnSize = 1;
+                noBtn.style.transform = 'translate(0, 0)';
+                noBtn.style.fontSize = '18px';
+                noBtn.style.padding = '14px 35px';
+            }
+        }
+
+        function noButtonClick(e) {
+            e.preventDefault();
+            alert('Oops! The button moved! Try saying YES instead! 💕');
+        }
+
+        // Mobile touch support
+        noBtn.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            moveNoButton(e);
+        });
+
+        // YES button - celebration
+        yesBtn.addEventListener('click', function() {
+            playSound('celebrate');
+            createConfetti();
+            celebrationOverlay.classList.add('show');
+            
+            // Redirect after celebration
+            setTimeout(() => {
+                window.location.href = googleFormURL;
+            }, 2500);
+        });
+
+        // Confetti effect
+        function createConfetti() {
+            const colors = ['#FF69B4', '#FFB6C1', '#FF1493', '#C71585', '#DA70D6', '#BA55D3'];
+            
+            for (let i = 0; i < 100; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.top = Math.random() * 100 + '%';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 30);
+            }
+        }
+
+        // Sound effects (basic beep sounds using Web Audio API)
+        function playSound(type) {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            if (type === 'click') {
+                oscillator.frequency.value = 800;
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.1);
+            } else if (type === 'celebrate') {
+                // Happy celebration sound
+                oscillator.frequency.value = 523.25; // C note
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                oscillator.start(audioContext.currentTime);
+                
+                setTimeout(() => {
+                    oscillator.frequency.value = 659.25; // E note
+                }, 100);
+                
+                setTimeout(() => {
+                    oscillator.frequency.value = 783.99; // G note
+                }, 200);
+                
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                oscillator.stop(audioContext.currentTime + 0.5);
+            }
+        }
+
+        // Background music (optional - simple melody)
+        function playBackgroundMusic() {
+            // This creates a simple, gentle background melody
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const notes = [523.25, 587.33, 659.25, 698.46, 783.99]; // C, D, E, F, G
+            
+            function playNote(frequency, duration, delay) {
+                setTimeout(() => {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.frequency.value = frequency;
+                    oscillator.type = 'sine';
+                    gainNode.gain.setValueAtTime(0.05, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+                    
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + duration);
+                }, delay);
+            }
+            
+            // Play gentle melody
+            let delay = 0;
+            for (let i = 0; i < 20; i++) {
+                const note = notes[Math.floor(Math.random() * notes.length)];
+                playNote(note, 0.5, delay);
+                delay += 600;
+            }
+        }
+
+        // Start background music after user interaction (browsers require this)
+        document.addEventListener('click', function startMusic() {
+            playBackgroundMusic();
+            document.removeEventListener('click', startMusic);
+        }, { once: true });
+    </script>
+</body>
+</html>
